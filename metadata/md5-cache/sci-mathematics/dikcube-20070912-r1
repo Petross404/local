@@ -1,0 +1,11 @@
+DEFINED_PHASES=compile install
+DESCRIPTION=Dik T. Winter's rubik's cube solver and related tools
+EAPI=6
+HOMEPAGE=http://www.sagemath.org
+KEYWORDS=~amd64 ~x86 ~amd64-linux ~x86-linux ~x86-macos ~x64-macos
+LICENSE=MIT
+RESTRICT=mirror
+SLOT=0
+SRC_URI=mirror://sageupstream/rubiks/rubiks-20070912.tar.bz2
+_eclasses_=eutils	b83a2420b796f7c6eff682679d08fe25	flag-o-matic	7366202dd55cb8f018f5d450d54e7749	multilib	165fc17c38d1b11dac2008280dab6e80	toolchain-funcs	1b1da0c45c555989dc5d832b54880783
+_md5_=4e2308ea13cc0e95219c972bc9e35c99
