@@ -1,17 +1,19 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
+KDE_TEST="forceoptional"
 KDEBASE="kdevelop"
 KMNAME="kdev-python"
-PYTHON_COMPAT=( python3_5 )
+PYTHON_COMPAT=( python3_{4,5,6} )
 inherit kde5 python-single-r1
 
 DESCRIPTION="Python plugin for KDevelop"
 IUSE=""
 [[ ${KDE_BUILD_TYPE} = release ]] && KEYWORDS="~amd64 ~x86"
+
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 DEPEND="${PYTHON_DEPS}
 	$(add_frameworks_dep kcompletion)
@@ -28,10 +30,10 @@ DEPEND="${PYTHON_DEPS}
 	$(add_frameworks_dep threadweaver)
 	$(add_qt_dep qtgui)
 	$(add_qt_dep qtwidgets)
-	dev-util/kdevplatform:5
+	dev-util/kdevelop:5
 "
 RDEPEND="${DEPEND}
-	dev-util/kdevelop:5
+	dev-python/pycodestyle[${PYTHON_USEDEP}]
 "
 
 RESTRICT+=" test"

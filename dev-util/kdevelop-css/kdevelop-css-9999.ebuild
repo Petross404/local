@@ -1,10 +1,10 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
 KDEBASE="kdevelop"
+KDE_TEST="true"
 KMNAME="kdev-css"
 inherit kde5
 
@@ -13,26 +13,20 @@ LICENSE="GPL-2"
 KEYWORDS=""
 IUSE=""
 
-COMMON_DEPEND="
-	$(add_frameworks_dep kcmutils)
-	$(add_frameworks_dep kconfig)
-	$(add_frameworks_dep kconfigwidgets)
+RDEPEND="
 	$(add_frameworks_dep kcoreaddons)
-	$(add_frameworks_dep kdelibs4support)
 	$(add_frameworks_dep ki18n)
-	$(add_frameworks_dep kio)
 	$(add_frameworks_dep ktexteditor)
 	$(add_frameworks_dep kxmlgui)
 	$(add_frameworks_dep threadweaver)
 	$(add_qt_dep qtgui)
-	$(add_qt_dep qtwebkit)
 	$(add_qt_dep qtwidgets)
 	dev-util/kdevelop-pg-qt:5
-	dev-util/kdevplatform:5
+	>=dev-util/kdevelop-5.1.80:5
 "
-DEPEND="${COMMON_DEPEND}
+DEPEND="${RDEPEND}
 	sys-devel/flex
+	test? ( >=dev-util/kdevelop-5.1.80:5[test] )
 "
-RDEPEND="${COMMON_DEPEND}
-	dev-util/kdevelop:5
-"
+
+PATCHES=( "${FILESDIR}/${PN}-tests.patch" ) # TODO: upstream

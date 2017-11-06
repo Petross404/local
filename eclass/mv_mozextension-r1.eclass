@@ -1,4 +1,4 @@
-# Copyright 2016 Gentoo Foundation
+# Copyright 2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: moz.eclass
@@ -17,7 +17,7 @@
 # @CODE
 # inherit moz
 #
-# MOZ="firefox palemoon seamonkey"
+# MOZ="<firefox-57 palemoon seamonkey"
 # DEPEND=${MOZ_DEPEND}
 # RDEPEND=$(moz_rdepend ${MOZ})
 # IUSE=$(moz_iuse ${MOZ})
@@ -46,18 +46,23 @@ moz_defaults() {
 }
 
 # @FUNCTION: moz_variables
-# @USAGE: [-c|-C|-n] [--] [<browser>] [<browser>] [...]
+# @USAGE: [-c|-C|-n] [-i id] [--] [<browser>] [<browser>] [...]
 # @DESCRIPTION:
 # Sets the variables DEPEND, RDEPEND, IUSE, REQUIRED_USE for browsers.
-# browser is firefox or seamonkey and implies source or binary version.
+# browser is (firefox|seamonkey|palemoon) and implies source or binary version.
 # If no browser is specified, all are assumed.
 # If option -C or -n is specified, IUSE=compressed is not default/added.
 moz_variables() {
 	local o opt
 	o=
 	OPTIND=1
-	while getopts 'cCn' opt
-	do	o="-${opt}"
+	while getopts 'cCni:' opt
+	do	case ${opt} in
+		[cCn])
+			o="-${opt}";;
+		*)
+			:;;
+		esac
 	done
 	shift $(( ${OPTIND} - 1 ))
 	DEPEND=${MOZ_DEPEND}
@@ -67,30 +72,32 @@ moz_variables() {
 }
 
 # @FUNCTION: moz_phases
-# @USAGE: [-c|-C|-n] [--] [ignored args]
+# @USAGE: [-cCn] [-i id] [--] [ignored args]
 # @DESCRIPTION:
 # Defines src_unpack and src_install to call only moz_unpack and moz_install.
-# If option -c or -n is specified, IUSE is ignored with compression on/off
 moz_phases() {
-	local o opt
-	o=
+	local o
+	o=()
 	OPTIND=1
-	while getopts 'cCn' opt
+	while getopts 'cCni:' opt
 	do	case ${opt} in
-		c)
-			o=" -c";;
-		n)
-			o=" -n";;
-		C)
-			o=;;
+		[cCn])
+			o+=("-${opt}");;
+		*)
+			o+=("-${opt}" "${OPTARG}");;
 		esac
 	done
 	shift $(( ${OPTIND} - 1 ))
+	set -- "${o[@]}"
+	if [ $# -eq 0 ]
+	then	quoteargs=
+	else	quoteargs=`printf ' %q' "$@"`
+	fi
 	eval "src_unpack() {
-moz_unpack${o}
+moz_unpack$quoteargs
 }
 	src_install() {
-moz_install${o}
+moz_install$quoteargs
 }"
 }
 
@@ -99,46 +106,134 @@ moz_install${o}
 # This is an eclass-generated depend expression needed for moz_unpack to work
 MOZ_DEPEND='app-arch/unzip'
 
+# @FUNCTION: moz_split_browser
+# @USAGE: <browser>
+# @DESCRIPTION:
+# browser is one of [operator](firefox|palemoon|seamonkey)[-source|-bin][*].
+# The function outputs the "browser[-source|-bin]" part
+moz_split_browser() {
+	local browser
+	for browser in firefox palemoon seamonkey
+	do	case ${1} in
+		*"${browser}"?source*)
+			echo "${browser}-source"
+			return;;
+		*"${browser}"?bin*)
+			echo "${browser}-bin"
+			return;;
+		*"${browser}"*)
+			echo "${browser}"
+			return;;
+		esac
+	done
+	die "args must be [operator](firefox|palemoon|seamonkey)[-source|-bin][*]"
+}
+
+# @FUNCTION: moz_split_operator
+# @USAGE: <browser>
+# @DESCRIPTION:
+# browser is one of [operator](firefox|palemoon|seamonkey)[-source|-bin][*].
+# The function outputs the "[operator]" part
+moz_split_operator() {
+	local browser operator
+	for browser in firefox palemoon seamonkey
+	do	case ${1} in
+		*"${browser}"*)
+			operator=${1%%"${browser}"*}
+			echo "${operator}"
+			return;;
+		esac
+	done
+	die "args must be [operator](firefox|palemoon|seamonkey)[-source|-bin][*]"
+}
+
+# @FUNCTION: moz_split_rest
+# @USAGE: <browser>
+# @DESCRIPTION:
+# browser is one of [operator](firefox|palemoon|seamonkey)[-source|-bin][*].
+# The function outputs the "[*]" part
+moz_split_rest() {
+	local front rest
+	for front in source bin firefox palemoon seamonkey
+	do	case ${1} in
+		*"${front}"*)
+			rest=${1#*"${front}"}
+			echo "${rest}"
+			return;;
+		esac
+	done
+	die "args must be [operator](firefox|palemoon|seamonkey)[-source|-bin][*]"
+}
+
+# @FUNCTION: moz_atom
+# @USAGE: <browser> <operator> <rest>
+# @DESCRIPTION:
+# Prints the atom/subexpression used in RDEPEND for the corresponding browser,
+# e.g. [operator]www-client/firefox-bin[rest]
+# browser is one of (firefox|palemoon|seamonkey)(-source|-bin)
+# If nothing is printed, the output of
+# "moz_atom_default <browser> <operator> <rest>"
+# is used (see below).
+# moz_atom is meant to be defined by the ebuild if non-defaults are used.
+# @DEFAULT_UNSET
+
+# @FUNCTION: moz_atom_default
+# @USAGE: <browser> <operator> <rest>
+# @DESCRIPTION:
+# Prints the atom/subexpression used in RDEPEND for the corresponding browser,
+# when moz_atom is not defined or prints nothing.
+# browser is one of (firefox|palemoon|seamonkey)(-source|-bin).
+moz_atom_default() {
+	echo "${2}www-client/${1%?source}${3}"
+}
+
 # @FUNCTION: moz_rdepend
 # @USAGE: [<browser>] [<browser>] [...]
 # @DESCRIPTION:
 # Outputs RDEPEND expression appropriate for browsers.
-# browser is [firefox|palemoon|seamonkey][-source|-bin] (no specified = all)
+# browser is one of [operator](firefox|palemoon|seamonkey)[-source|-bin][*]
+# (none specified = all browsers)
+# Note that moz_rdepend_atom (if defined by the ebuild) is used to calculate
+# the expression.
 moz_rdepend() {
-	local rdep i c mode
-	[ ${#} -ne 0 ] || set -- "firefox palemoon seamonkey"
-	c=
+	local arg rdep browser count modes mode atom useflag operator rest
+	[ ${#} -ne 0 ] || set -- firefox palemoon seamonkey
+	count=
 	rdep=
-	for i in firefox palemoon seamonkey
-	do	mode=
-		case ${*} in
-		*"${i}"?source*)
-			mode=s;;
-		*"${i}"?bin*)
-			mode=b;;
-		*"${i}"*)
-			mode=sb;;
+	for arg
+	do	browser=`moz_split_browser "${arg}"`
+		operator=`moz_split_operator "${arg}"`
+		rest=`moz_split_rest "${arg}"`
+		modes="source bin"
+		case ${browser} in
+		*source*)
+			browser=${browser%?source*}
+			modes=source;;
+		*bin*)
+			browser=${browser%?bin*}
+			modes=bin;;
 		esac
-		case ${mode} in
-		*s*)
-			rdep=${rdep}${rdep:+\ }"browser_${i}? ( www-client/${i} )"
-			c=${c}a;;
-		esac
-		case ${mode} in
-		*b*)
-			rdep=${rdep}${rdep:+\ }"browser_${i}-bin? ( www-client/${i}-bin )"
-			c=${c}a;;
-		esac
+		for mode in $modes
+		do	atom=
+			[ "$(type -t moz_atom)" != "function" ] || \
+				atom=`moz_atom "${browser}-${mode}" "${operator}" "${rest}"`
+			[ -n "$atom" ] || \
+				atom=`moz_atom_default "${browser}-${mode}" "${operator}" "${rest}"`
+			useflag=browser_${browser}
+			[ "$mode" = "source" ] || useflag=${useflag}-${mode}
+			rdep=${rdep}${rdep:+\ }"${useflag}? ( ${atom} )"
+			count=${count}a
+		done
 	done
-	[ -n "${c}" ] || die "args must be [firefox|palemoon|seamonkey][-source|-bin]"
-	[ "${c}" = a ] && echo "${rdep}" || echo "|| ( ${rdep} )"
+	[ "${count}" = a ] && echo "${rdep}" || echo "|| ( ${rdep} )"
 }
 
 # @FUNCTION: moz_iuse
 # @USAGE: [-c|-C|-n] [--] [<browser>] [<browser>] [...]
 # @DESCRIPTION:
 # Outputs IUSE expression appropriate for browsers.
-# browser is [firefox|palemoon|seamonkey][-source|-bin] (no specified = all).
+# browser is [opertator](firefox|palemoon|seamonkey)[-source|-bin][*]
+# (none specified = all browsers).
 # If option -C or -n is specified, IUSE=compressed is not default/added.
 moz_iuse() {
 	local iuse i opt
@@ -152,7 +247,7 @@ moz_iuse() {
 		esac
 	done
 	shift $(( ${OPTIND} - 1 ))
-	[ ${#} -ne 0 ] || set -- "firefox palemoon seamonkey"
+	[ ${#} -ne 0 ] || set -- firefox palemoon seamonkey
 	for i in firefox palemoon seamonkey
 	do	case "${*}" in
 		*"${i}"?source*)
@@ -163,7 +258,7 @@ moz_iuse() {
 			iuse=${iuse}${iuse:+\ }"browser_${i} browser_${i}-bin";;
 		esac
 	done
-	[ -n "${iuse}" ] || die "args must be [firefox|palemoon|seamonkey][-source|-bin]"
+	[ -n "${iuse}" ] || die "args must be [operator](firefox|palemoon|seamonkey)[-source|-bin][*]"
 	echo "${iuse}"
 }
 
@@ -171,27 +266,30 @@ moz_iuse() {
 # @USAGE: [<browser>] [<browser>] [...]
 # @DESCRIPTION:
 # Outputs REQUIRED_USE expression appropriate for browsers.
-# browser is [firefox|palemoon|seamonkey][-source|-bin] (no specified means all)
+# browser is [operator](firefox|palemoon|seamonkey)[-source|-bin][*]
+# (none specified = all browsers).
 moz_required_use() {
 	set -- $(moz_iuse -n "${@}")
 	[ ${#} -lt 2 ] && echo "${*}" || echo "|| ( ${*} )"
 }
 
 # @FUNCTION: moz_unpack
-# @USAGE: [-c|-C|-n] [--] <file> <file> [...]
+# @USAGE: [-c|-C|-n] [-i id] [--] <file> <file> [...]
 # @DESCRIPTION:
 # Unpack xpi files. If no file is specified, ${A} is used.
 # Option -c means compression mode (partial unpack), independent of USE
 # Option -n means no-compression mode (full unpack), independent of USE
 moz_unpack() {
-	local xpi srcdir xpiname archiv comp opt
+	local xpi srcdir xpiname archiv comp opt id
+	id=false
 	comp=
 	OPTIND=1
-	while getopts 'cn' opt
+	while getopts 'Ccni:' opt
 	do	case ${opt} in
 		c)	comp=:;;
 		n)	comp=false;;
 		C)	comp=;;
+		i)	id=:;;
 		esac
 	done
 	shift $(( ${OPTIND} - 1 ))
@@ -228,8 +326,11 @@ moz_unpack() {
 		mkdir -- "${S}/${xpiname}" || die
 		cd -- "${S}/${xpiname}" || die
 		if ${comp}
-		then	einfo "Extracting install.rdf for ${xpiname}"
-			unzip -qo -- "${archiv}" install.rdf || die
+		then	if ! ${id}
+			then	einfo "Extracting install.rdf/manifest.json for ${xpiname}"
+				unzip -qo -- "${archiv}" install.rdf manifest.json
+				# Do not die on failure: One of the two files will not exist
+			fi
 		else	einfo "Unpacking ${xpiname}"
 			unzip -qo -- "${archiv}" || die
 			chmod -R a+rX,u+w,go-w -- "${S}/${xpiname}" || die
@@ -238,26 +339,33 @@ moz_unpack() {
 }
 
 # @FUNCTION: moz_getid
-# @USAGE: <variable> [<path/to/[install.rdf]>]
+# @USAGE: <variable> [<path/to/[install.rdf,manifest.json]>]
 # @DESCRIPTION:
-# Extracts the package id from the install.rdf manifest
+# Extracts the package id from the install.rdf/manifest.json
 # and stores the result in the variable.
 moz_getid() {
-	local var res sub rdf
+	local var res sub dir file
 	[ ${#} -ne 0 ] || die "${FUNCNAME} needs at least one argument"
 	var=${1}
-	rdf=${2:-.}
-	rdf=${rdf%/}
-	! test -d "${rdf}" || rdf=${rdf}"/install.rdf"
-	test -f "${rdf}" || die "${rdf} is not an ordinary file"
-	sub='{ /\<\(em:\)*id\>/!d; s/.*[\">]\([^\"<>]*\)[\"<].*/\1/; p; q }'
-	res=$(sed -n -e '/install-manifest/,$ '"${sub}" -- "${rdf}") || res=
-	[ -n "${res}" ] || die "failed to determine id from ${rdf}"
+	dir=${2:-.}
+	dir=${dir%/}
+	test -d "${dir}" || die "moz_getid: argument must be a directory"
+	file=${dir}/install.rdf
+	if test -f "${file}"
+	then	sub='{ /\<\(em:\)*id\>/!d; s/.*[\">]\([^\"<>]*\)[\"<].*/\1/; p; q }'
+		res=$(sed -n -e '/install-manifest/,$ '"${sub}" -- "${file}") || res=
+	else	file=${dir}/manifest.json
+		test -f "${file}" || die "cannot find ${dir}/{install.rdf,manifest.json}"
+		sub='^[[:space:]]*["'\''][iI][dD]["'\''][[:space:]]*:[[:space:]]*'
+		sub=${sub}'["'\'']\(.*\)["'\''][[:space:]]*,\?[[:space:]]*$/\1'
+		res=$(sed -n -e "s/${sub}/p" -- "${file}") || res=
+	fi
+	[ -n "${res}" ] || die "failed to determine id from ${file}"
 	eval ${var}=\${res}
 }
 
 # @FUNCTION: moz_install_to_dir
-# @USAGE: [-n] [--] <extension-directory> <dir> <dir> [...]
+# @USAGE: [-n] [-i id] [--] <extension-directory> <dir> <dir> [...]
 # @DESCRIPTION:
 # Installs dir.xpi as (id) of extension-directory,
 # the name of the id being determined from ${dir}/install.rdf.
@@ -268,9 +376,11 @@ moz_getid() {
 moz_install_to_dir() {
 	local id dest i have comp opt
 	comp=:
+	id=
 	OPTIND=1
-	while getopts 'cn' opt
+	while getopts 'cni:' opt
 	do	case ${opt} in
+		i)	id=${OPTARG};;
 		c)	comp=:;;
 		n)	comp=false;;
 		esac
@@ -285,7 +395,7 @@ moz_install_to_dir() {
 	for i
 	do	[ -n "${i}" ] && test -d "${i}" || continue
 		have=:
-		moz_getid id "${i}"
+		[ -n "${id}" ] || moz_getid id "${i}"
 		if ${comp}
 		then	ln -- "${i}.xpi" "${ED}${dest}/${id}.xpi" \
 			|| cp -- "${i}.xpi" "${ED}${dest}/${id}.xpi" || die
@@ -300,19 +410,25 @@ moz_install_to_dir() {
 }
 
 # @FUNCTION: moz_install_for_browser
-# @USAGE: [-n] [--] <browser> <dir> <dir> [...]
+# @USAGE: [-n] [-i id] [--] <browser> <dir> <dir> [...]
 # @DESCRIPTION:
-# Installs dirs.xpi for browser ({firefox,palemoon,seymonkey}{,-bin}).
+# Installs dirs.xpi for browser.
+# browser is [operator](firefox|palemoon|seymonkey)[-source|-bin][*]
 # Arguments which are not directories are silently ignored.
 # If arguments are specified, they must contain at least one directory.
 # If no argument is specified, all directories from "${S}" are considered.
 # Option -n means nocompression mode: Install dirs instead of dirs.xpi.
 moz_install_for_browser() {
 	local dest firefox palemoon seamonkey o opt
-	o=
+	o=()
 	OPTIND=1
-	while getopts 'cn' opt
-	do	o="-${opt}"
+	while getopts 'cni:' opt
+	do	case ${opt} in
+		[cn])
+			o+=("-$opt");;
+		*)
+			o+=("-$opt" "${OPTARG}");;
+		esac
 	done
 	shift $(( ${OPTIND} - 1 ))
 	[ ${#} -ne 0 ] || die "${FUNCNAME} needs at least one argument"
@@ -320,27 +436,27 @@ moz_install_for_browser() {
 	palemoon="palemoon/browser/extensions"
 	seamonkey="seamonkey/extensions"
 	case ${1} in
-	firefox)
-		dest="/usr/$(get_libdir)/${firefox}";;
-	firefox?bin)
+	*firefox*bin*)
 		dest="/opt/${firefox}";;
-	palemoon)
-		dest="/usr/$(get_libdir)/${palemoon}";;
-	palemoon?bin)
+	*firefox*)
+		dest="/usr/$(get_libdir)/${firefox}";;
+	*palemoon?bin*)
 		dest="/opt/${palemoon}";;
-	seamonkey)
-		dest="/usr/$(get_libdir)/${seamonkey}";;
-	seamonkey?bin)
+	*palemoon*)
+		dest="/usr/$(get_libdir)/${palemoon}";;
+	*seamonkey?bin*)
 		dest="/opt/${seamonkey}";;
+	*seamonkey*)
+		dest="/usr/$(get_libdir)/${seamonkey}";;
 	*)
 		die "unknown browser specified";;
 	esac
 	shift
-	moz_install_to_dir ${o} -- "${dest}" "${@}"
+	moz_install_to_dir "${o[@]}" -- "${dest}" "${@}"
 }
 
 # @FUNCTION: moz_install
-# @USAGE: [-c|-n|-C] [--] <dir> <dir> [...]
+# @USAGE: [-c|-n|-C] [-i id] [--] <dir> <dir> [...]
 # @DESCRIPTION:
 # Installs dirs/dirs.xpi into appropriate destinations, depending on USE.
 # Arguments which are not directories are silently ignored.
@@ -349,14 +465,16 @@ moz_install_for_browser() {
 # Option -n means to install dir instead of dirs.xpi, independent on USE.
 # Option -c means to install dir.xpi, independent on USE.
 moz_install() {
-	local i o opt
+	local i id o opt
+	id=
 	o="?"
 	OPTIND=1
-	while getopts 'cCn' opt
+	while getopts 'cCni:' opt
 	do	case ${opt} in
 		c)	o=;;
 		n)	o="-n";;
 		C)	o="?";;
+		i)	id=$OPTARG;;
 		esac
 	done
 	shift $(( ${OPTIND} - 1 ))
@@ -366,7 +484,7 @@ moz_install() {
 	fi
 	for i in firefox firefox-bin palemoon palemoon-bin seamonkey seamonkey-bin
 	do	if in_iuse "browser_${i}" && use "browser_${i}"
-		then	moz_install_for_browser ${o} -- "${i}" "${@}"
+		then	moz_install_for_browser ${o} ${id:+-i "$id"} -- "${i}" "${@}"
 		fi
 	done
 }

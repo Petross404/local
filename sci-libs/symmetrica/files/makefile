@@ -16,12 +16,10 @@ LIBS=-lm
 CC?=gcc
 CFLAGS?=-O1
 FPICFLAG?=-fPIC
-LDFLAGSS?=-O1
 VERSION=2.0
 DIRNAME=symmetrica-$(VERSION)
-TARGETS=libsymmetrica.a sharedlib
+TARGETS=libsymmetrica.a libsymmetrica.so
 PREFIX?=/usr
-LIBDIR?=lib
 
 all: $(TARGETS)
 
@@ -35,19 +33,19 @@ all: $(TARGETS)
 
 test: test.c $(OBJS)
 	$(CC) -DALLTRUE -DFAST test.c $(OBJS) $(LIBS) -o test
-# 	./test
 
 libsymmetrica.a: $(OBJS)
 	ar crs $@ $(OBJS)
 	ranlib $@
 
-sharedlib: $(SHOBJS)
-	$(CC) $(CFLAGS) $(FPICFLAG) ${LDFLAGS} -shared -Wl,-soname,lib$(DIRNAME).so $(LIBS) -o lib$(DIRNAME).so $(SHOBJS)
+libsymmetrica.so: $(SHOBJS)
+	$(CC) $(CFLAGS) $(FPICFLAG) -shared -Wl,-soname,lib$(DIRNAME).so $(LIBS) -o lib$(DIRNAME).so $(SHOBJS)
+	ln -s lib$(DIRNAME).so $@
 
 install: all
-	mkdir -p $(DESTDIR)$(PREFIX)/$(LIBDIR)
-	install -p lib$(DIRNAME).so libsymmetrica.a $(DESTDIR)$(PREFIX)/$(LIBDIR)
-	ln -s lib$(DIRNAME).so $(DESTDIR)$(PREFIX)/$(LIBDIR)/libsymmetrica.so
+	mkdir -p $(DESTDIR)$(PREFIX)/lib
+	install -p lib$(DIRNAME).so libsymmetrica.a $(DESTDIR)$(PREFIX)/lib
+	ln -s lib$(DIRNAME).so $(DESTDIR)$(PREFIX)/lib/libsymmetrica.so
 	mkdir -p $(DESTDIR)$(PREFIX)/include/symmetrica
 	install -p def.h macro.h $(DESTDIR)$(PREFIX)/include/symmetrica/
 

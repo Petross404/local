@@ -10,5 +10,5 @@ RDEPEND=pari? ( sci-mathematics/pari:= )
 RESTRICT=mirror test
 SLOT=0
 SRC_URI=http://oto.math.uwaterloo.ca/~mrubinst/L_function_public/CODE/L-1.23.tar.gz
-_eclasses_=multilib	165fc17c38d1b11dac2008280dab6e80	toolchain-funcs	1b1da0c45c555989dc5d832b54880783
-_md5_=1b9212829c2731d8f483d56d70eaff6c
+_eclasses_=multilib	97f470f374f2e94ccab04a2fb21d811e	toolchain-funcs	185a06792159ca143528e7010368e8af
+_md5_=351e718be9fbb685c55b8eb6a57b343f

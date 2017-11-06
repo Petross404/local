@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=5
 inherit eutils multilib
@@ -79,8 +78,7 @@ src_compile() {
 		touch build/TAGS
 	fi
 
-	#parallel make fails
-	emake -j1 || die "Compilation failed"
+	emake || die "Compilation failed"
 }
 
 src_install () {

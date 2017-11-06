@@ -1,6 +1,5 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
@@ -21,14 +20,13 @@ COMMON_DEPEND="
 	$(add_frameworks_dep threadweaver)
 	$(add_qt_dep qtgui)
 	$(add_qt_dep qtwidgets)
-	dev-util/kdevplatform:5
+	dev-util/kdevelop:5
 "
 DEPEND="${COMMON_DEPEND}
 	dev-util/kdevelop-pg-qt:5
 "
 RDEPEND="${COMMON_DEPEND}
 	dev-lang/go
-	dev-util/kdevelop:5
 "
 
 DOCS=( README.md )

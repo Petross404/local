@@ -1,13 +1,12 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
 KDEBASE="kdevelop"
 KDE_DOC_DIR="docs"
 KDE_HANDBOOK="forceoptional"
-KDE_TEST="forceoptional-recursive"
+KDE_TEST="forceoptional"
 KMNAME="kdev-php"
 VIRTUALX_REQUIRED="test"
 inherit kde5
@@ -31,12 +30,10 @@ DEPEND="
 	$(add_frameworks_dep kxmlgui)
 	$(add_frameworks_dep threadweaver)
 	$(add_qt_dep qtgui)
-	$(add_qt_dep qtwebkit)
 	$(add_qt_dep qtwidgets)
 	dev-util/kdevelop-pg-qt:5
-	>=dev-util/kdevplatform-${PV}:${SLOT}
+	dev-util/kdevelop:5
 "
 RDEPEND="${DEPEND}
 	!dev-util/kdevelop-php-docs
-	dev-util/kdevelop:5
 "

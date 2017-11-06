@@ -1,11 +1,12 @@
-DEFINED_PHASES=configure install prepare unpack
-DEPEND=media-gfx/opencsg sci-mathematics/cgal dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4(-)] >=dev-vcs/git-1.8.2.1
+DEFINED_PHASES=compile configure install prepare unpack
+DEPEND=media-gfx/opencsg sci-mathematics/cgal qt5? ( dev-qt/qtcore:5 dev-qt/qtgui:5[-gles2] dev-qt/qtopengl:5 ) qt4? ( dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] ) dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4=,qt5=] emacs? ( virtual/emacs ) >=dev-vcs/git-1.8.2.1
 DESCRIPTION=The Programmers Solid 3D CAD Modeller
 EAPI=6
 HOMEPAGE=http://www.openscad.org/
-KEYWORDS=~amd64 ~x86
+IUSE=emacs qt4 +qt5
 LICENSE=GPL-2
-RDEPEND=media-gfx/opencsg sci-mathematics/cgal dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4(-)]
+RDEPEND=media-gfx/opencsg sci-mathematics/cgal qt5? ( dev-qt/qtcore:5 dev-qt/qtgui:5[-gles2] dev-qt/qtopengl:5 ) qt4? ( dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] ) dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4=,qt5=] emacs? ( virtual/emacs )
+REQUIRED_USE=^^ ( qt4 qt5 )
 SLOT=0
-_eclasses_=eutils	b83a2420b796f7c6eff682679d08fe25	git-r3	e928b84a9f6f1d9076d1d27687876dc6	multilib	165fc17c38d1b11dac2008280dab6e80	qmake-utils	0a242e7177789b0028b4045f336dd4db	toolchain-funcs	1b1da0c45c555989dc5d832b54880783
-_md5_=c3c64607d2dc883232915d778665b8c9
+_eclasses_=elisp-common	23f47b2e1de7abf387105eddd1318738	epatch	8233751dc5105a6ae8fcd86ce2bb0247	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	227b041a120d309fdefbebb3b8c1dfa9	git-r3	52a888802d25387c2c74cb845d1219bc	ltprune	2770eed66a9b8ef944714cd0e968182e	multilib	97f470f374f2e94ccab04a2fb21d811e	qmake-utils	990448b067cb3cfe1443bc25fb57239c	toolchain-funcs	185a06792159ca143528e7010368e8af
+_md5_=8b665d5d9bc18eb9fd4b1ebf977a4e67

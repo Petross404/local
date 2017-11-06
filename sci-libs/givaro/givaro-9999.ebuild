@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
@@ -33,4 +32,10 @@ src_prepare(){
 src_configure(){
 	econf \
 		$(use_enable static-libs static)
+}
+
+src_install(){
+	default
+	# remove la file
+	find "${ED}" -name '*.la' -delete || die
 }

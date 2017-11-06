@@ -1,5 +1,5 @@
 DEFINED_PHASES=prepare
-DEPEND=dev-libs/gmp:= !<sys-devel/gettext-0.18.1.1-r3 || ( >=sys-devel/automake-1.15:1.15 ) >=sys-devel/autoconf-2.69 >=sys-devel/libtool-2.4
+DEPEND=dev-libs/gmp:= >=app-portage/elt-patches-20170422 !<sys-devel/gettext-0.18.1.1-r3 || ( >=sys-devel/automake-1.15:1.15 ) >=sys-devel/autoconf-2.69 >=sys-devel/libtool-2.4
 DESCRIPTION=William Hart's GPL'd multi-polynomial quadratic sieve for integer factorization
 EAPI=6
 HOMEPAGE=https://github.com/sagemath/FlintQS
@@ -9,5 +9,5 @@ RDEPEND=dev-libs/gmp:=
 RESTRICT=mirror
 SLOT=0
 SRC_URI=https://github.com/sagemath/FlintQS/archive/v1.0.tar.gz -> flintqs-1.0.tar.gz
-_eclasses_=autotools	07e71b3b5690738ef7e8bc097077e00c	libtool	4890219c51da247200223277f993e054	multilib	165fc17c38d1b11dac2008280dab6e80	toolchain-funcs	1b1da0c45c555989dc5d832b54880783
-_md5_=2d5d50cbd146c5242b37587175a994b8
+_eclasses_=autotools	dc412f38566b91012efd58b9c203e6c3	libtool	0081a71a261724730ec4c248494f044d	multilib	97f470f374f2e94ccab04a2fb21d811e	toolchain-funcs	185a06792159ca143528e7010368e8af
+_md5_=a4f82bfd85370a4e6be07c8544592ff4

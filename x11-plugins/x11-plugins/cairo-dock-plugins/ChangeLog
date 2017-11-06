@@ -1,9 +1,0 @@
-# ChangeLog for x11-misc/cairo-dock
-# Copyright 1999-2010 Gentoo Foundation; Distributed under the GPL v2
-# $Header$
-
-*cairo-dock-9999 (03 Feb 2012)
-
-  03 Feb 2012; David P <write2david@gmail.com>
-  +cairo-dock-9999.ebuild:
-  Initial commit

@@ -1,0 +1,13 @@
+app-i18n/poedit 2.0.4: GUI editor for gettext translations files
+app-office/texstudio 2.12.6: Free cross-platform LaTeX editor (fork from texmakerX)
+app-portage/emerge-delta-webrsync-ng 20120911: emerge-delta-webrsync rewrite to take advantage of lbzip2 (using deltas)
+app-portage/portage-utils 0.64-r1: small and fast portage helper tools written in C
+dev-util/adobe-air-sdk-bin 2.6: Adobe AIR SDK
+media-gfx/opencsg 1.4.2: The Constructive Solid Geometry rendering library
+media-gfx/openscad 9999: The Programmers Solid 3D CAD Modeller
+net-mail/libdbx 1.0.4-r1: Tools and library for reading Outlook Express mailboxes (.dbx format)
+net-misc/anydesk 2.9.5: All-In-One Solution for Remote Access and Support over the Internet
+net-misc/tigervnc 9999: Remote desktop viewer display system
+x11-libs/libfm 9999: A library for file management
+x11-libs/wxGTK 3.0.3.1-r301: GTK+ version of wxWidgets, a cross-platform C++ GUI toolkit
+x11-misc/pcmanfm 9999: Fast lightweight tabbed filemanager

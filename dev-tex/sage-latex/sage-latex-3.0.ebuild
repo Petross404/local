@@ -1,8 +1,7 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
+EAPI=6
 
 PYTHON_COMPAT=( python2_7 )
 
@@ -21,15 +20,17 @@ IUSE="examples"
 
 RESTRICT="mirror"
 
-DEPEND=""
-RDEPEND="dev-tex/pgf"
+DEPEND="app-text/texlive[extra]"
+RDEPEND="${DEPEND}
+	dev-tex/pgf"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-3.0-install-python-files-only.patch
+	)
 
 S="${WORKDIR}"/${MY_P}
 
 src_prepare() {
-	# LaTeX file are installed by eclass functions
-	epatch "${FILESDIR}"/${PN}-3.0-install-python-files-only.patch
-
 	mkdir sub || die "faile to create sub"
 	for i in scripts.dtx remote-sagetex.dtx py-and-sty.dtx; do
 		mv "${i}" sub/ || die "failed to move ${i} to sub"

@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
@@ -20,6 +19,8 @@ DEPEND="${RDEPEND}"
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-2.8.0-flint_includes.patch
+	"${FILESDIR}"/${PN}-2.8.1-pie.patch
+	"${FILESDIR}"/PR-187.patch
 	)
 
 src_configure() {

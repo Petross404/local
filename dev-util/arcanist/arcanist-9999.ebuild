@@ -1,6 +1,5 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
@@ -23,5 +22,5 @@ RDEPEND="
 src_install() {
 	dodir /opt/${PN}
 	cp -a "${S}"/* "${D}/opt/${PN}"
-	dosym /opt/${PN}/bin/arc /usr/bin/arc
+	dosym ../../opt/${PN}/bin/arc /usr/bin/arc
 }
