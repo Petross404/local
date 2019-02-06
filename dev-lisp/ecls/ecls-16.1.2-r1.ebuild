@@ -1,7 +1,7 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 inherit eutils multilib
 
 # test phase only works if ecls already installed #516876
@@ -11,7 +11,7 @@ MY_P=ecl-${PV}
 
 DESCRIPTION="ECL is an embeddable Common Lisp implementation"
 HOMEPAGE="https://common-lisp.net/project/ecl/"
-SRC_URI="https://common-lisp.net/project/ecl/files/release/${PV}/${MY_P}.tgz"
+SRC_URI="https://common-lisp.net/project/ecl/static/files/release/${MY_P}.tgz"
 
 LICENSE="BSD LGPL-2"
 SLOT="0/${PV}"
@@ -30,6 +30,11 @@ RDEPEND="${CDEPEND}"
 
 S="${WORKDIR}"/${MY_P}
 
+PATCHES=(
+	"${FILESDIR}"/${PV}-headers-gentoo.patch
+	"${FILESDIR}"/${PV}-getcwd.patch
+	)
+
 pkg_setup () {
 	if use gengc || use precisegc ; then
 		ewarn "You have enabled the generational garbage collector or"
@@ -40,10 +45,8 @@ pkg_setup () {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/${PV}-headers-gentoo.patch
-	# upstream backport
-	# https://gitlab.com/embeddable-common-lisp/ecl/commit/ac5f011f57a85a38627af154bc3ee7580e7fecd4
-	epatch "${FILESDIR}"/${PV}-getcwd.patch
+	default
+
 	cp "${EPREFIX}"/usr/share/common-lisp/source/asdf/build/asdf.lisp contrib/asdf/ || die
 }
 

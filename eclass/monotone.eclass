@@ -1,4 +1,4 @@
-# Copyright 2016 Gentoo Foundation
+# Copyright 2010-2018 Martin V\"ath
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: monotone.eclass
@@ -6,6 +6,7 @@
 # Martin Väth <martin@mvath.de>
 # @AUTHOR:
 # Martin Väth <martin@mvath.de>
+# @SUPPORTED_EAPIS: 0 1 2 3 4 5 6 7
 # @BLURB: The monotone eclass is written to fetch software sources from monotone repositories
 # @DESCRIPTION:
 # The monotone eclass provides functions to fetch software sources from
@@ -191,6 +192,11 @@ monotone_src_unpack() {
 	monotone_finish
 }
 
-[ -n "${EMTN_DISABLE_DEPENDENCIES}" ] || DEPEND='dev-vcs/monotone'
+[ -n "${EMTN_DISABLE_DEPENDENCIES}" ] || case ${EAPI:-0} in
+0|1|2|3|4|5|6)
+	DEPEND='dev-vcs/monotone';;
+*)
+	BDEPEND='dev-vcs/monotone';;
+esac
 
 EXPORT_FUNCTIONS src_unpack

@@ -1,9 +1,9 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
-inherit java-pkg-2 versionator
+inherit java-pkg-2
 
 MY_PN="Jmol"
 MY_PM="jmol"
@@ -28,6 +28,8 @@ QA_PREBUILT="*"
 S="${WORKDIR}"/${MY_SP}
 
 src_prepare(){
+	default
+
 	rm jmol.bat jmol.mac
 
 	# jsmol is zipped inside the tarball

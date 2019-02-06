@@ -1,7 +1,7 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
 PYTHON_COMPAT=( python2_7 )
 
@@ -39,6 +39,8 @@ S="${WORKDIR}/${MYP}"
 
 src_prepare() {
 	numeric-int64_ensure_blas_int_support
+
+	cmake-utils_src_prepare
 
 	# rename library to avoid collision with other lapack implementations
 	# ${PROFNAME}, ${LIBNAME} and ${BLAS_REQUIRES} are not defined here, they

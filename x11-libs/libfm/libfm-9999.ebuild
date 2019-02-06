@@ -1,16 +1,16 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
-inherit autotools fdo-mime git-r3 vala
+inherit autotools git-r3 vala xdg-utils
 
 DESCRIPTION="A library for file management"
 HOMEPAGE="http://pcmanfm.sourceforge.net/"
 EGIT_REPO_URI="https://github.com/lxde/${PN}"
 
 LICENSE="GPL-2"
-SLOT="0/4.4.0" #copy ABI_VERSION because it seems upstream change it randomly
+SLOT="0/5.1.1" #copy ABI_VERSION because it seems upstream change it randomly
 KEYWORDS=""
 IUSE="+automount debug doc examples exif +gtk +gtk3 udisks vala"
 
@@ -119,9 +119,9 @@ pkg_preinst() {
 }
 
 pkg_postinst() {
-	fdo-mime_mime_database_update
+	xdg_mimeinfo_database_update
 }
 
 pkg_postrm() {
-	fdo-mime_mime_database_update
+	xdg_mimeinfo_database_update
 }

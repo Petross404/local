@@ -28,7 +28,7 @@ diff -pruN portage-utils-0.63.orig/qlop.c portage-utils-0.63/qlop.c
  #define QLOP_UNLIST  0x02
  
 +
-+_q_static FILE *
++static FILE *
 +qfopen(const char *logfile)
 +{
 +	FILE *fp;
@@ -42,7 +42,7 @@ diff -pruN portage-utils-0.63.orig/qlop.c portage-utils-0.63/qlop.c
 +	}
 +}
 +
-+_q_static void
++static void
 +qfclose(FILE *fp)
 +{
 +	if (fp != stdin)
@@ -51,7 +51,7 @@ diff -pruN portage-utils-0.63.orig/qlop.c portage-utils-0.63/qlop.c
 +		exit(EXIT_SUCCESS);
 +}
 +
- _q_static void
+ static void
  print_seconds_for_earthlings(const unsigned long t)
  {
 @@ -98,10 +122,7 @@ show_merge_times(char *package, const ch
@@ -116,4 +116,4 @@ diff -pruN portage-utils-0.63.orig/qlop.c portage-utils-0.63/qlop.c
 +	qfclose(fp);
  }
  
- _q_static void show_current_emerge(void);
+ static void show_current_emerge(void);

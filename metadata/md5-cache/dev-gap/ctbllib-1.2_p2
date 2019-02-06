@@ -1,12 +1,10 @@
 DEFINED_PHASES=install
-DEPEND=>=sci-mathematics/gap-4.7.8
 DESCRIPTION=The GAP Character Table Library
-EAPI=6
+EAPI=7
 HOMEPAGE=http://www.gap-system.org/Packages/ctbllib.html
 KEYWORDS=~amd64 ~x86
 LICENSE=GPL-2+
-RDEPEND=>=sci-mathematics/gap-4.7.8
-SLOT=0
-SRC_URI=http://www.gap-system.org/pub/gap/gap4/tar.bz2/packages/ctbllib-1r2p2.tar.bz2
-_eclasses_=epatch	8233751dc5105a6ae8fcd86ce2bb0247	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	227b041a120d309fdefbebb3b8c1dfa9	ltprune	2770eed66a9b8ef944714cd0e968182e	multilib	97f470f374f2e94ccab04a2fb21d811e	toolchain-funcs	185a06792159ca143528e7010368e8af	versionator	c80ccf29e90adea7c5cae94b42eb76d0
-_md5_=cd172d6e1edfd4ce2cb05aaf8eb65452
+RDEPEND=sci-mathematics/gap:0/4.8.6
+SLOT=0/4.8.6
+SRC_URI=https://www.gap-system.org/pub/gap/gap48/tar.bz2/gap4r8p6_2016_11_12-14_25.tar.bz2
+_md5_=5412fc2406eae2721ff849f5e602407f

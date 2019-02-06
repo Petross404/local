@@ -1,5 +1,5 @@
 DEFINED_PHASES=compile configure install prepare unpack
-DEPEND=media-gfx/opencsg sci-mathematics/cgal qt5? ( dev-qt/qtcore:5 dev-qt/qtgui:5[-gles2] dev-qt/qtopengl:5 ) qt4? ( dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] ) dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4=,qt5=] emacs? ( virtual/emacs ) >=dev-vcs/git-1.8.2.1
+DEPEND=media-gfx/opencsg sci-mathematics/cgal qt5? ( dev-qt/qtcore:5 dev-qt/qtgui:5[-gles2] dev-qt/qtopengl:5 ) qt4? ( dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] ) dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4=,qt5=] emacs? ( virtual/emacs ) >=dev-vcs/git-1.8.2.1[curl]
 DESCRIPTION=The Programmers Solid 3D CAD Modeller
 EAPI=6
 HOMEPAGE=http://www.openscad.org/
@@ -8,5 +8,5 @@ LICENSE=GPL-2
 RDEPEND=media-gfx/opencsg sci-mathematics/cgal qt5? ( dev-qt/qtcore:5 dev-qt/qtgui:5[-gles2] dev-qt/qtopengl:5 ) qt4? ( dev-qt/qtcore:4 dev-qt/qtgui:4[-egl] dev-qt/qtopengl:4[-egl] ) dev-cpp/eigen:3 dev-libs/glib:2 dev-libs/gmp:0= dev-libs/mpfr:0= dev-libs/boost:= media-libs/fontconfig:1.0 media-libs/freetype:2 media-libs/glew:* media-libs/harfbuzz x11-libs/qscintilla:=[qt4=,qt5=] emacs? ( virtual/emacs )
 REQUIRED_USE=^^ ( qt4 qt5 )
 SLOT=0
-_eclasses_=elisp-common	23f47b2e1de7abf387105eddd1318738	epatch	8233751dc5105a6ae8fcd86ce2bb0247	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	227b041a120d309fdefbebb3b8c1dfa9	git-r3	52a888802d25387c2c74cb845d1219bc	ltprune	2770eed66a9b8ef944714cd0e968182e	multilib	97f470f374f2e94ccab04a2fb21d811e	qmake-utils	990448b067cb3cfe1443bc25fb57239c	toolchain-funcs	185a06792159ca143528e7010368e8af
+_eclasses_=desktop	b1d22ac8bdd4679ab79c71aca235009d	elisp-common	23f47b2e1de7abf387105eddd1318738	epatch	a1bf4756dba418a7238f3be0cb010c54	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	6e6c2737b59a4b982de6fb3ecefd87f8	git-r3	0d4635eeb5a96cd5315597a47eba25c9	ltprune	08f9e1d9ee0af8f5d9a7854efbcd8c0e	multilib	b2f01ad412baf81650c23fcf0975fa33	preserve-libs	ef207dc62baddfddfd39a164d9797648	qmake-utils	bdf97e69a34b864d6d545f4ec3143ff7	toolchain-funcs	f164325a2cdb5b3ea39311d483988861	vcs-clean	2a0f74a496fa2b1552c4f3398258b7bf
 _md5_=8b665d5d9bc18eb9fd4b1ebf977a4e67

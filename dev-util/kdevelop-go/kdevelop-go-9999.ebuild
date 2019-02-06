@@ -1,7 +1,7 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 KDEBASE="kdevelop"
 KMNAME="kdev-go"
@@ -10,8 +10,11 @@ inherit kde5
 DESCRIPTION="Go language support for KDevelop"
 LICENSE="GPL-2"
 KEYWORDS=""
-IUSE=""
+IUSE="test"
 
+BDEPEND="
+	test? ( dev-util/kdevelop:5[test] )
+"
 COMMON_DEPEND="
 	$(add_frameworks_dep kcoreaddons)
 	$(add_frameworks_dep ki18n)

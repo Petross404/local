@@ -1,5 +1,4 @@
 # ChangeLog for eclass directory
-# Copyright 2017 Gentoo Foundation; Distributed under the GPL v2
 
   12 May 2012; Martin Väth <martin@mvath.de>:
   Created ChangeLog
@@ -71,3 +70,21 @@
 
   04 Nov 2017; Martin Väth <martin@mvath.de>:
   Support manifest.json in mv_mozextension-r1.eclass
+
+  27 Dec 2017; Martin Väth <martin@mvath.de>:
+  Remove meson_optional.eclass since meson.eclass in gentoo repository is fixed
+
+  27 Jan 2018; Martin Väth <martin@mvath.de>:
+  mv_mozextension-r1.eclass: manifest.json: search "id" only inside "gecko"
+
+  14 Apr 2018; Martin Väth <martin@mvath.de>:
+  mv_mozextension-r1.eclass: remove support for legacy extensions
+
+  07 May 2018; Martin Väth <martin@mvath.de>:
+  monotone.eclass, mv_mozextension-r1.eclass: Support EAPI=7
+
+  14 May 2018; Martin Väth <martin@mvath.de>:
+  rquired-use-warn.eclass: new eclass
+
+  12 Aug 2018; Martin Väth <martin@mvath.de>:
+  Add @SUPPORTED_EAPIS

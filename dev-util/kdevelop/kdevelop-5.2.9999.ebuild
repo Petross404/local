@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -12,7 +12,7 @@ inherit kde5
 
 DESCRIPTION="Integrated Development Environment, supporting KF5/Qt, C/C++ and much more"
 LICENSE="GPL-2 LGPL-2"
-IUSE="cvs +gdbui okteta +plasma +qmake reviewboard subversion webkit +welcomepage"
+IUSE="cvs +gdbui hex +plasma +qmake reviewboard subversion webkit +welcomepage"
 [[ ${KDE_BUILD_TYPE} = release ]] && KEYWORDS="~amd64 ~x86"
 
 REQUIRED_USE="test? ( welcomepage )"
@@ -60,13 +60,13 @@ COMMON_DEPEND="
 	>=sys-devel/clang-3.8.0:=
 	x11-misc/shared-mime-info
 	gdbui? ( $(add_plasma_dep libksysguard) )
-	okteta? ( $(add_kdeapps_dep okteta) )
+	hex? ( app-editors/okteta:5 )
 	plasma? (
 		$(add_frameworks_dep krunner)
 		$(add_frameworks_dep plasma)
 	)
 	qmake? ( dev-util/kdevelop-pg-qt:5 )
-	reviewboard? ( dev-libs/purpose )
+	reviewboard? ( $(add_frameworks_dep purpose) )
 	subversion? (
 		dev-libs/apr:1
 		dev-libs/apr-util:1
@@ -93,7 +93,6 @@ RDEPEND="${COMMON_DEPEND}
 	!dev-util/kdevelop-qmake
 	!dev-util/kdevelop-qmljs
 	!dev-util/kdevplatform
-	!<kde-apps/kapptemplate-16.04.0
 "
 
 RESTRICT+=" test"
@@ -105,13 +104,15 @@ src_configure() {
 		$(cmake-utils_use_find_package gdbui KF5SysGuard)
 		-DBUILD_executeplasmoid=$(usex plasma)
 		$(cmake-utils_use_find_package plasma KF5Plasma)
-		$(cmake-utils_use_find_package okteta OktetaKastenControllers)
+		$(cmake-utils_use_find_package hex OktetaKastenControllers)
 		$(cmake-utils_use_find_package qmake KDevelop-PG-Qt)
-		$(cmake-utils_use_find_package reviewboard KDEExperimentalPurpose)
+		$(cmake-utils_use_find_package reviewboard KF5Purpose)
 		$(cmake-utils_use_find_package subversion SubversionLibrary)
 		$(cmake-utils_use_find_package !webkit Qt5WebEngineWidgets)
 		$(cmake-utils_use_find_package welcomepage Qt5QuickWidgets)
 	)
+
+	use reviewboard || mycmakeargs+=( -DCMAKE_DISABLE_FIND_PACKAGE_KDEExperimentalPurpose=ON )
 
 	kde5_src_configure
 }

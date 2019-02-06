@@ -1,7 +1,7 @@
-# Copyright 2017 Gentoo Foundation
+# Copyright 2012-2018 Martin V\"ath
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 RESTRICT="mirror"
 
 DESCRIPTION="mount/unmount create/remove dm-crypt filesystems according to your /etc/fstab"
@@ -10,7 +10,7 @@ SRC_URI="https://github.com/vaeth/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~alpha ~amd64 ~arm64 ~hppa ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~ppc-aix ~x64-cygwin ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE=""
 
 # This should really depend on a USE-flag but must not by policy.
@@ -27,7 +27,7 @@ src_prepare() {
 	use prefix || sed -i \
 		-e '1s"^#!/usr/bin/env perl$"#!'"${EPREFIX}/usr/bin/perl"'"' \
 		-- bin/* || die
-	eapply_user
+	default
 }
 
 src_install() {

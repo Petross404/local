@@ -1,7 +1,7 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit git-r3
 
@@ -15,12 +15,12 @@ KEYWORDS=""
 IUSE=""
 
 RDEPEND="
-	dev-lang/php[curl]
+	dev-lang/php[cli,curl]
 	dev-libs/libphutil
 "
 
 src_install() {
 	dodir /opt/${PN}
-	cp -a "${S}"/* "${D}/opt/${PN}"
+	cp -a "${S}"/* "${D}/opt/${PN}" || die
 	dosym ../../opt/${PN}/bin/arc /usr/bin/arc
 }
