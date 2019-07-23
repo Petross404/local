@@ -157,16 +157,8 @@ fi
 # An array of $CATEGORY-$PV pairs of packages that are unreleased upstream.
 # Any package matching this will have fetch restriction enabled, and receive
 # a proper error message via pkg_nofetch.
-KDE_UNRELEASED=( kde-frameworks-5.55.0 )
-
-if [[ ${KDEBASE} = kdevelop ]]; then
-	HOMEPAGE="https://www.kdevelop.org/"
-elif [[ ${KMNAME} = kdepim ]]; then
-	HOMEPAGE="https://www.kde.org/applications/office/kontact/"
-else
-	HOMEPAGE="https://www.kde.org/"
-fi
-
+KDE_UNRELEASED=( )
+HOMEPAGE="https://kde.org/"
 LICENSE="GPL-2"
 
 SLOT=5
@@ -204,11 +196,6 @@ case ${KDE_AUTODEPS} in
 		# all packages need breeze/oxygen icons for basic iconset, bug #564838
 		if [[ ${PN} != breeze-icons && ${PN} != oxygen-icons ]]; then
 			RDEPEND+=" || ( $(add_frameworks_dep breeze-icons) kde-frameworks/oxygen-icons:* )"
-		fi
-
-		if [[ ${CATEGORY} = kde-apps && ${PV} = 18.08.3 ]]; then
-			[[ ${KDE_BLOCK_SLOT4} = true ]] && RDEPEND+=" !kde-apps/${PN}:4"
-			RDEPEND+=" !kde-apps/kde-l10n"
 		fi
 		;;
 esac
@@ -274,20 +261,12 @@ case ${EAPI} in
 	6) DEPEND+=" ${BDEPEND}" ;;
 esac
 
-DEPEND+=" ${COMMONDEPEND} dev-util/desktop-file-utils"
+DEPEND+=" ${COMMONDEPEND}"
 RDEPEND+=" ${COMMONDEPEND}"
 unset COMMONDEPEND
 
 if [[ -n ${KMNAME} && ${KMNAME} != ${PN} && ${KDE_BUILD_TYPE} = release ]]; then
 	S=${WORKDIR}/${KMNAME}-${PV}
-fi
-
-if [[ -n ${KDEBASE} && ${KDEBASE} = kdevelop && ${KDE_BUILD_TYPE} = release ]]; then
-	if [[ -n ${KMNAME} ]]; then
-		S=${WORKDIR}/${KMNAME}-${PV}
-	else
-		S=${WORKDIR}/${P}
-	fi
 fi
 
 _kde_is_unreleased() {
@@ -322,9 +301,10 @@ _calculate_src_uri() {
 		kross)
 			_kmname="portingAids/${_kmname}"
 			;;
+		kdewebkit)
+			[[ ${PV} = 5.5?.* ]] || _kmname="portingAids/${_kmname}"
+			;;
 	esac
-
-	DEPEND+=" app-arch/xz-utils"
 
 	case ${CATEGORY} in
 		kde-apps)
@@ -355,23 +335,15 @@ _calculate_src_uri() {
 			;;
 	esac
 
-	if [[ -z ${SRC_URI} && -n ${KDEBASE} ]] ; then
-		local _kdebase
-		case ${PN} in
-			kdevelop-pg-qt)
-				_kdebase=${PN} ;;
-			*)
-				_kdebase=${KDEBASE} ;;
-		esac
+	if [[ ${PN} = kdevelop* ]]; then
 		case ${PV} in
 			*.*.[6-9]? )
-				SRC_URI="mirror://kde/unstable/${_kdebase}/${PV}/src/${_kmname}-${PV}.tar.xz"
+				SRC_URI="mirror://kde/unstable/kdevelop/${PV}/src/${_kmname}-${PV}.tar.xz"
 				RESTRICT+=" mirror"
 				;;
 			*)
-				SRC_URI="mirror://kde/stable/${_kdebase}/${PV}/src/${_kmname}-${PV}.tar.xz" ;;
+				SRC_URI="mirror://kde/stable/kdevelop/${PV}/src/${_kmname}-${PV}.tar.xz" ;;
 		esac
-		unset _kdebase
 	fi
 
 	if _kde_is_unreleased ; then
@@ -412,6 +384,10 @@ _calculate_live_repo() {
 
 	if [[ ${PV} != 9999 && ${CATEGORY} = kde-plasma ]]; then
 		EGIT_BRANCH="Plasma/$(ver_cut 1-2)"
+	fi
+
+	if [[ ${PV} != 9999 && ${PN} = kdevelop* ]]; then
+		EGIT_BRANCH="$(ver_cut 1-2)"
 	fi
 
 	EGIT_REPO_URI="${EGIT_MIRROR}/${_kmname}"
@@ -521,7 +497,10 @@ kde5_src_prepare() {
 	fi
 
 	# enable only the requested translations when required
-	if [[ -v LINGUAS ]] ; then
+	# always install unconditionally for kconfigwidgets - if you use language
+	# X as system language, and there is a combobox with language names, the
+	# translated language name for language Y is taken from /usr/share/locale/Y/kf5_entry.desktop
+	if [[ -v LINGUAS && ${PN} != kconfigwidgets ]] ; then
 		local po
 		for po in ${KDE_PO_DIRS}; do
 		if [[ -d ${po} ]] ; then
@@ -702,9 +681,11 @@ kde5_src_install() {
 	# cmake can't find the tags and qthelp viewers can't find the docs
 	local p=$(best_version dev-qt/qtcore:5)
 	local pv=$(echo ${p/%-r[0-9]*/} | rev | cut -d - -f 1 | rev)
-	#todo: clean up trailing slash check when EAPI <7 is removed
-	if [[ -d ${ED%/}/usr/share/doc/qt-${pv} ]]; then
-		docompress -x /usr/share/doc/qt-${pv}
+	if [[ ${pv} = 5.11* ]]; then
+		#todo: clean up trailing slash check when EAPI <7 is removed
+		if [[ -d ${ED%/}/usr/share/doc/qt-${pv} ]]; then
+			docompress -x /usr/share/doc/qt-${pv}
+		fi
 	fi
 
 	if [[ ${EAPI} = 6 ]]; then
@@ -723,7 +704,6 @@ kde5_src_install() {
 kde5_pkg_preinst() {
 	debug-print-function ${FUNCNAME} "$@"
 
-	[[ ${EAPI} == 6 ]] && gnome2_icon_savelist
 	xdg_pkg_preinst
 }
 
@@ -733,9 +713,6 @@ kde5_pkg_preinst() {
 kde5_pkg_postinst() {
 	debug-print-function ${FUNCNAME} "$@"
 
-	if [[ ${EAPI} == 6 && -n ${GNOME2_ECLASS_ICONS} ]]; then
-		gnome2_icon_cache_update
-	fi
 	xdg_pkg_postinst
 
 	if [[ -z ${I_KNOW_WHAT_I_AM_DOING} ]]; then
@@ -754,9 +731,6 @@ kde5_pkg_postinst() {
 kde5_pkg_postrm() {
 	debug-print-function ${FUNCNAME} "$@"
 
-	if [[ ${EAPI} == 6 && -n ${GNOME2_ECLASS_ICONS} ]]; then
-		gnome2_icon_cache_update
-	fi
 	xdg_pkg_postrm
 }
 

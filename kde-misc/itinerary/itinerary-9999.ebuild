@@ -7,7 +7,7 @@ KDE_TEST="forceoptional"
 inherit kde5
 
 DESCRIPTION="Data Model and Extraction System for Travel Reservation information"
-HOMEPAGE="https://www.kde.org/applications/office/kontact/"
+HOMEPAGE="https://kde.org/applications/office/kontact/"
 
 LICENSE="LGPL-2+"
 KEYWORDS=""
@@ -25,6 +25,7 @@ DEPEND="
 	$(add_qt_dep qtnetwork)
 	$(add_qt_dep qtpositioning)
 	$(add_qt_dep qtwidgets)
+	kde-misc/kpublictransport:5
 	sys-libs/zlib
 "
 RDEPEND="${DEPEND}

@@ -1,18 +1,26 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=6
 
 KDE_HANDBOOK="forceoptional"
 KDE_TEST="true"
 VIRTUALDBUS_TEST="true"
 VIRTUALX_REQUIRED="test"
-inherit kde5
+inherit kde5 git-r3
+
+#if [[ ${KDE_BUILD_TYPE} = release ]]; then
+#	SRC_URI="mirror://kde/stable/kdevelop/${PV}/src/${P}.tar.xz"
+#	KEYWORDS="~amd64 ~x86"
+#fi
+
+EGIT_REPO_URI="https://invent.kde.org/petross/kdevelop.git"
+EGIT_BRANCH="custom-script"
 
 DESCRIPTION="Integrated Development Environment, supporting KF5/Qt, C/C++ and much more"
+HOMEPAGE="https://www.kdevelop.org/"
 LICENSE="GPL-2 LGPL-2"
 IUSE="+gdbui hex +plasma +qmake reviewboard subversion webkit"
-[[ ${KDE_BUILD_TYPE} = release ]] && KEYWORDS="~amd64 ~x86"
 
 COMMON_DEPEND="
 	$(add_frameworks_dep karchive)
@@ -78,14 +86,12 @@ DEPEND="${COMMON_DEPEND}
 RDEPEND="${COMMON_DEPEND}
 	$(add_kdeapps_dep kapptemplate)
 	$(add_kdeapps_dep kio-extras)
+	$(add_qt_dep qtquickcontrols)
+	$(add_qt_dep qtquickcontrols2)
 	dev-util/ninja
 	>=sys-devel/gdb-7.0[python]
 	reviewboard? ( $(add_kdeapps_dep ktp-accounts-kcm) )
-	!dev-util/kdevelop-clang
 	!dev-util/kdevelop-clang-tidy
-	!dev-util/kdevelop-cppcheck
-	!dev-util/kdevelop-qmake
-	!dev-util/kdevelop-qmljs
 	!dev-util/kdevplatform
 "
 

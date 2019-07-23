@@ -7,8 +7,8 @@ KDE_HANDBOOK="forceoptional"
 VIRTUALX_REQUIRED="test"
 inherit kde5
 
-DESCRIPTION="KControl module for Wacom tablets"
-HOMEPAGE="https://www.linux-apps.com/content/show.php?action=content&content=114856"
+DESCRIPTION="System settings module for Wacom tablets"
+HOMEPAGE="https://userbase.kde.org/Wacomtablet https://store.kde.org/p/1127862"
 
 LICENSE="GPL-2"
 KEYWORDS=""
@@ -41,3 +41,12 @@ DEPEND="${RDEPEND}
 	x11-base/xorg-proto
 	x11-libs/libX11
 "
+
+src_test() {
+	# test needs DBus, bug 675548
+	local myctestargs=(
+		-E "(Test.KDED.DBusTabletService)"
+	)
+
+	kde5_src_test
+}

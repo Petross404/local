@@ -3,19 +3,20 @@
 
 EAPI=7
 
-KDEBASE="kdevelop"
-KDE_TEST="forceoptional"
+KDE_TEST="true"
 inherit kde5
 
+if [[ ${KDE_BUILD_TYPE} = release ]]; then
+	SRC_URI="mirror://kde/stable/${PN}/${PV}/src/${P}.tar.xz"
+	KEYWORDS="~amd64 ~x86"
+fi
+
 DESCRIPTION="LL(1) parser generator used mainly by KDevelop language plugins"
+HOMEPAGE="https://www.kdevelop.org/"
 LICENSE="LGPL-2+ LGPL-2.1+"
 IUSE=""
-[[ ${KDE_BUILD_TYPE} = release ]] && KEYWORDS="~amd64 ~x86"
 
 BDEPEND="
 	sys-devel/bison
 	sys-devel/flex
-"
-RDEPEND="
-	!dev-util/kdevelop-pg-qt:4
 "

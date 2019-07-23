@@ -1,9 +1,0 @@
-DEFINED_PHASES=prepare unpack
-DEPEND=>=dev-vcs/git-1.8.2.1[curl]
-DESCRIPTION=C++ Bloom Filter Library
-EAPI=5
-HOMEPAGE=https://github.com/arashpartow/bloom
-LICENSE=MPL-1.1
-SLOT=0
-_eclasses_=git-r3	0d4635eeb5a96cd5315597a47eba25c9
-_md5_=230d62223f148fc6d6efd74b44a0a559

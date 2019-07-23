@@ -36,60 +36,41 @@ export KDE_BUILD_TYPE
 case ${CATEGORY} in
 	kde-frameworks)
 		[[ ${KDE_BUILD_TYPE} = live ]] && : ${FRAMEWORKS_MINIMAL:=9999}
-		[[ ${PV} = 5.52.0* ]] && : ${QT_MINIMAL:=5.9.4}
 		;;
 	kde-plasma)
-		if [[ ${PV} = 5.14.90 || ${PV} = 5.15.49* ]]; then
-			: ${FRAMEWORKS_MINIMAL:=5.54.0}
-		fi
-		if [[ ${KDE_BUILD_TYPE} = live && ${PV} != 5.??.49* ]]; then
-			: ${FRAMEWORKS_MINIMAL:=9999}
-		fi
+		[[ ${PV} = 5.16* ]] && : ${FRAMEWORKS_MINIMAL:=5.60.0}
+		[[ ${KDE_BUILD_TYPE} = live ]] && : ${FRAMEWORKS_MINIMAL:=9999}
 		;;
 	kde-apps)
-		[[ ${PV} = 18.08.3* ]] && : ${QT_MINIMAL:=5.9.4}
-		if [[ ${KDE_BUILD_TYPE} = live && ${PV} != ??.??.49* ]]; then
-			: ${FRAMEWORKS_MINIMAL:=5.54.0}
-		fi
+		[[ ${KDE_BUILD_TYPE} = live ]] && : ${FRAMEWORKS_MINIMAL:=5.60.0}
 		;;
 esac
 
 # @ECLASS-VARIABLE: QT_MINIMAL
 # @DESCRIPTION:
 # Minimum version of Qt to require. This affects add_qt_dep.
-: ${QT_MINIMAL:=5.11.1}
+: ${QT_MINIMAL:=5.12.3}
 
 # @ECLASS-VARIABLE: FRAMEWORKS_MINIMAL
 # @DESCRIPTION:
 # Minimum version of Frameworks to require. This affects add_frameworks_dep.
-: ${FRAMEWORKS_MINIMAL:=5.52.0}
+: ${FRAMEWORKS_MINIMAL:=5.57.0}
 
 # @ECLASS-VARIABLE: PLASMA_MINIMAL
 # @DESCRIPTION:
 # Minimum version of Plasma to require. This affects add_plasma_dep.
-: ${PLASMA_MINIMAL:=5.12.5}
+: ${PLASMA_MINIMAL:=5.15.5}
 
 # @ECLASS-VARIABLE: KDE_APPS_MINIMAL
 # @DESCRIPTION:
 # Minimum version of KDE Applications to require. This affects add_kdeapps_dep.
-: ${KDE_APPS_MINIMAL:=18.08.3}
+: ${KDE_APPS_MINIMAL:=18.12.3}
 
 # @ECLASS-VARIABLE: KDE_GCC_MINIMAL
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # Minimum version of active GCC to require. This is checked in kde5.eclass in
 # kde5_pkg_pretend and kde5_pkg_setup.
-
-# @ECLASS-VARIABLE: KDEBASE
-# @DEFAULT_UNSET
-# @DESCRIPTION:
-# This gets set to a non-zero value when a package is considered a
-# kdevelop ebuild.
-if [[ ${KMNAME-${PN}} = kdevelop ]]; then
-	KDEBASE=kdevelop
-fi
-
-debug-print "${ECLASS}: ${KDEBASE} ebuild recognized"
 
 # @FUNCTION: _check_gcc_version
 # @INTERNAL
